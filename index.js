@@ -1,3 +1,5 @@
+
+
 function createGameboard (player1,player2){
     const gameboard = [];
     const player1board = [];
@@ -46,7 +48,7 @@ function createGameboard (player1,player2){
     const move = (name,num) => {
         if(gameboard.includes(num)){
             console.log(`board already has ${num}`);
-            return;
+            return false;
         }
         increase_count();
 
@@ -88,21 +90,37 @@ function createPlayer(playerName){
 //controlDisply object
 const controlDisplay = (function(){
 
-    const updateDisplay = ()=> {
-        game1.player1board.forEach(function(item){
+    const updateDisplay = (gameboard)=> {
+        gameboard.player1board.forEach(function(item){
             let square = document.querySelector(`#_${item}`)
             square.textContent = "x";
             
         });
 
-        game1.player2board.forEach(function(item){
+        gameboard.player2board.forEach(function(item){
             let square = document.querySelector(`#_${item}`)
             square.textContent = "o";
             
         });
-    };
+    }
+
+    const clickDisplay = (gameboard,name,num) =>{
+        if(gameboard.move(name,num) == false){
+            alert("already piece there");
+            return;
+        }
+        let mark;
+        if(name == gameboard.name1){
+            mark = "x";
+        }
+        else{
+            mark = "o";
+        }
+        let square = document.querySelector(`#_${num}`)
+            square.textContent = mark;
+    }
     
-    return {updateDisplay};
+    return {updateDisplay,clickDisplay};
 
 })();
 
@@ -118,6 +136,16 @@ game1.move("bob", 11);
 game1.move("bob", 33);
 game1.move("emma",21);
 
-controlDisplay.updateDisplay();
+
+
+controlDisplay.updateDisplay(game1);
+
+controlDisplay.clickDisplay(game1, "bob", 13);
+
+let square = document.querySelector(`#_${23}`)
+square.addEventListener("click", () => controlDisplay.clickDisplay(game1, "emma", 23));
+
+
+
 
 
