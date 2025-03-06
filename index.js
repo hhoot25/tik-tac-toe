@@ -1,4 +1,4 @@
-
+display = document.querySelector("#display");
 
 const gameObj = (function (){
     const gameboard = [];
@@ -69,7 +69,12 @@ const gameObj = (function (){
         }
         console.log(`${turn} claimed ${num}`);
         if(checkGame(board) == true){
-            console.log(`${turn} won`);
+            let name;
+            if(turn == 1){
+                name = gameObj.name1;
+            }
+            else {gameObj = name2;}
+            display.textContent = `${name} Won!`;
         }
 
         //change player turn
@@ -81,7 +86,7 @@ const gameObj = (function (){
         }
 
         if(count == 9){
-            console.log("it's a tie");
+            display.textContent = `It's a tie, Play Again!`;
         }
     }
 
@@ -152,14 +157,6 @@ gameObj.name1 = "bob";
 gameObj.name2 = "emma";
 
 //bob is X : emma is o
-gameObj.move(gameObj.turn,22);
-
-gameObj.move(gameObj.turn,11);
-
-gameObj.move(gameObj.turn,33);
-
-gameObj.move(gameObj.turn,21);
-
 
 
 controlDisplay.updateDisplay(gameObj);
