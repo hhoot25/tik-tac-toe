@@ -1,13 +1,16 @@
 
 
-function createGameboard (player1,player2){
+const gameObj = (function (){
     const gameboard = [];
     const player1board = [];
     const player2board = [];
     let count = 0;
 
-    const name1 = player1.name;
-    const name2 = player2.name;
+    //one will mean player 1 turn and two will mean player 2 turn
+    let turn = 1;
+
+    let name1;
+    let name2;
 
     const increase_count = () =>{
         count++;
@@ -45,17 +48,18 @@ function createGameboard (player1,player2){
         return false;
     }
     
-    const move = (name,num) => {
+    const move = (turn,num) => {
         if(gameboard.includes(num)){
             console.log(`board already has ${num}`);
             return false;
         }
+        
+        //increase pieces on board by one
         increase_count();
 
-
-        gameboard.push(num);
         let board;
-        if(name === name1){
+        gameboard.push(num);
+        if(turn == 1){
             player1board.push(num);
             board = player1board;
         }
@@ -63,9 +67,17 @@ function createGameboard (player1,player2){
             player2board.push(num);
             board = player2board;
         }
-        console.log(`${name} claimed ${num}`);
+        console.log(`${turn} claimed ${num}`);
         if(checkGame(board) == true){
-            console.log(`${name} won`);
+            console.log(`${turn} won`);
+        }
+
+        //change player turn
+        if(turn == 1){
+            gameObj.turn = 2;
+        }
+        else{
+            gameObj.turn = 1;
         }
 
         if(count == 9){
@@ -78,39 +90,35 @@ function createGameboard (player1,player2){
 
 
 
-    return({gameboard,name1,name2,player1board,player2board,checkGame,checkGame,move});
+    return({gameboard,name1,name2,player1board,player2board,checkGame,move, turn});
 
-}
+})();
 
-function createPlayer(playerName){
-    let name = playerName;
-    return({name});
-}
 
 //controlDisply object
 const controlDisplay = (function(){
 
     const updateDisplay = (gameboard)=> {
-        gameboard.player1board.forEach(function(item){
+        gameObj.player1board.forEach(function(item){
             let square = document.querySelector(`#_${item}`)
             square.textContent = "x";
             
         });
 
-        gameboard.player2board.forEach(function(item){
+        gameObj.player2board.forEach(function(item){
             let square = document.querySelector(`#_${item}`)
             square.textContent = "o";
             
         });
     }
 
-    const clickDisplay = (gameboard,name,num) =>{
-        if(gameboard.move(name,num) == false){
+    const clickDisplay = (turn,num) =>{
+        if(gameObj.move(turn,num) == false){
             alert("already piece there");
             return;
         }
         let mark;
-        if(name == gameboard.name1){
+        if(turn == 1){
             mark = "x";
         }
         else{
@@ -124,26 +132,39 @@ const controlDisplay = (function(){
 
 })();
 
+//add event listener to add squares
+const elements = document.querySelectorAll('.square');
+
+elements.forEach(element => {
+    element.addEventListener('click', function(event){
+        let string = `${this.id}`;
+        let sliceString = string.slice(1);
+        let num = parseInt(sliceString);
+        controlDisplay.clickDisplay(gameObj.turn, num);
+    });
+});
+
 
 
 //main
-bob = createPlayer("bob");
-emma = createPlayer("emma");
 
-game1 = createGameboard(bob, emma);
-game1.move("bob",22);
-game1.move("bob", 11);
-game1.move("bob", 33);
-game1.move("emma",21);
+gameObj.name1 = "bob";
+gameObj.name2 = "emma";
+
+//bob is X : emma is o
+gameObj.move(gameObj.turn,22);
+
+gameObj.move(gameObj.turn,11);
+
+gameObj.move(gameObj.turn,33);
+
+gameObj.move(gameObj.turn,21);
 
 
 
-controlDisplay.updateDisplay(game1);
+controlDisplay.updateDisplay(gameObj);
 
-controlDisplay.clickDisplay(game1, "bob", 13);
 
-let square = document.querySelector(`#_${23}`)
-square.addEventListener("click", () => controlDisplay.clickDisplay(game1, "emma", 23));
 
 
 
