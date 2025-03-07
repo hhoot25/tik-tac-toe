@@ -9,6 +9,7 @@ body{
     align-items:center;
     height:100vh;
 }
+
 #display{
     display:grid;
     justify-content:center;
@@ -25,10 +26,59 @@ body{
 }
 
 #controls{
-    width:1000px;
+    display:grid;
+    grid-template-columns:1fr 1fr;
     height:200px;
-    background:grey;
+    gap:10px;
 }
+
+dialog {
+    font-size:30px;
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    border-radius:30px;
+}
+.horizontal{
+    display:flex;
+    gap:10px;
+    margin:10px;
+}
+input{
+    font-size:20px;
+    border-radius:20px;
+}
+
+#confirmBtn{
+    font-size:50px;
+    width:300px;
+    border-radius:50px;
+    background-color:rgb(98, 149, 21);
+}
+
+
+
+#goForm{
+    display:grid;
+    justify-content:center;
+    align-items:center;
+    font-size:30px;
+    background-color:rgb(209, 159, 167);
+    border-radius:110px;
+}
+
+#restart{
+    display:grid;
+    justify-content:center;
+    align-items:center;
+    font-size:30px;
+    background-color:red;
+    border-radius:110px;
+}
+
+
+
 #container{
     display:grid;
     background-color:rgb(91, 41, 29);

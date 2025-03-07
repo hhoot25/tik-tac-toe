@@ -1,10 +1,18 @@
-display = document.querySelector("#display");
+const display = document.querySelector("#display");
+
+const confirmBtn = document.querySelector('#confirmBtn');
+const myForm = document.querySelector('#myForm');
+
+const goForm = document.querySelector('#goForm');
+
+const dialog = document.querySelector('#dialog');
+
+const restart = document.querySelector('#restart');
 
 const gameObj = (function (){
     const gameboard = [];
     const player1board = [];
     const player2board = [];
-    let count = 0;
 
     //one will mean player 1 turn and two will mean player 2 turn
     let turn = 1;
@@ -12,9 +20,7 @@ const gameObj = (function (){
     let name1;
     let name2;
 
-    const increase_count = () =>{
-        count++;
-    }
+
 
     //check if game is won
     const checkGame = (board) => {
@@ -38,7 +44,7 @@ const gameObj = (function (){
         if(board.includes(13) && board.includes(23) && board.includes(33)){
             return true;
         }
-        //check diagnols
+        //check diagonals
         if(board.includes(11) && board.includes(22) && board.includes(33)){
             return true;
         }
@@ -54,8 +60,6 @@ const gameObj = (function (){
             return false;
         }
         
-        //increase pieces on board by one
-        increase_count();
 
         let board;
         gameboard.push(num);
@@ -68,24 +72,29 @@ const gameObj = (function (){
             board = player2board;
         }
         console.log(`${turn} claimed ${num}`);
+        
+
+        //change player turn
+        if(turn == 1){
+            gameObj.turn = 2;
+            display.textContent = `${gameObj.name2} Turn`;
+        }
+        else{
+            gameObj.turn = 1;
+            display.textContent = `${gameObj.name1} Turn`;
+        }
+        //check game logic after move
         if(checkGame(board) == true){
             let name;
             if(turn == 1){
                 name = gameObj.name1;
             }
-            else {gameObj = name2;}
+            else {name = gameObj.name2}
             display.textContent = `${name} Won!`;
+            return;
         }
 
-        //change player turn
-        if(turn == 1){
-            gameObj.turn = 2;
-        }
-        else{
-            gameObj.turn = 1;
-        }
-
-        if(count == 9){
+        if(gameObj.gameboard.length == 9){
             display.textContent = `It's a tie, Play Again!`;
         }
     }
@@ -119,7 +128,7 @@ const controlDisplay = (function(){
 
     const clickDisplay = (turn,num) =>{
         if(gameObj.move(turn,num) == false){
-            alert("already piece there");
+            display.innerHTML = ("already piece there");
             return;
         }
         let mark;
@@ -132,8 +141,22 @@ const controlDisplay = (function(){
         let square = document.querySelector(`#_${num}`)
             square.textContent = mark;
     }
+
+    const restartDisplay = () => {
+        gameObj.gameboard.length = 0;
+        gameObj.player1board.length = 0;
+        gameObj.player2board.length = 0;
+        gameObj.turn = 1; // Reset turn to player 1
+
+        elements.forEach(element => {
+            element.textContent = ""; // Clear board display
+        });
+
+        display.textContent = `${gameObj.name1} goes first!`; // Reset display
+    }
+
     
-    return {updateDisplay,clickDisplay};
+    return {updateDisplay,clickDisplay,restartDisplay};
 
 })();
 
@@ -149,17 +172,43 @@ elements.forEach(element => {
     });
 });
 
+goForm.addEventListener("click", () =>{
+    dialog.showModal();
+});
+
+confirmBtn.addEventListener("click", (event) => {
+    event.preventDefault();
+
+    const formData = new FormData(myForm);
+    const name1 = formData.get("name1");
+    const name2 = formData.get("name2");
+
+    gameObj.name1 = name1;
+    gameObj.name2 = name2;
+
+    controlDisplay.restartDisplay();
+
+
+
+    dialog.close();
+
+});
+
+restart.addEventListener("click", ()=>{
+    controlDisplay.restartDisplay();
+});
+
 
 
 //main
 
-gameObj.name1 = "bob";
-gameObj.name2 = "emma";
-
+gameObj.name1 = "default1";
+gameObj.name2 = "default1";
 //bob is X : emma is o
 
 
 controlDisplay.updateDisplay(gameObj);
+dialog.showModal();
 
 
 
